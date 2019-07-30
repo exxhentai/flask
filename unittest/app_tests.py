@@ -15,6 +15,10 @@ class AppTestCase(unittest.TestCase):
         rv = self.app.get('/api/searchByWords')
         assert b'Not Implemented' in rv.data
 
+    def test_get_detail(self):
+        rv = self.app.get('/api/getDetail')
+        assert b'Not Implemented' in rv.data
+
 
 if __name__ == '__main__':
     unittest.main()

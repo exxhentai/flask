@@ -12,7 +12,7 @@ class AppTestCase(unittest.TestCase):
         pass
 
     def test_search(self):
-        rv = self.app.post('/api/searchByWords')
+        rv = self.app.get('/api/searchByWords')
         assert b'Not Implemented' in rv.data
 
 

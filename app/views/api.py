@@ -20,7 +20,7 @@ def search_by_words():
     #: (optional) 不包含的分类
     minimum_rating = json['minimum']
     #: (optional) 最低评分
-    return search.search(words, limit, page, filtered_category, minimum_rating)
+    return search.search(words, limit, page, filtered_category, minimum_rating, tag_list)
 
 
 @api.route('/api/getDetail')

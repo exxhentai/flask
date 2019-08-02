@@ -10,6 +10,8 @@ def search_by_words():
     json = request.get_json()
     words = json['word']
     #: (optional) 搜索的关键字，如果为空则返回所有结果
+    tag_list = json['tags']
+    #: (optional) 搜索的Tags，格式为Array<Str>
     limit = json['lim']
     #: (optional) 搜索的结果数，默认25
     page = json['pg']

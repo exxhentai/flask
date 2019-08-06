@@ -13,7 +13,5 @@ def set_IPFS_folder_hash_by_gid():
     ipfs_hash = request_json.get('ipfs_hash', '')
     #: 需要添加的 IPFS Hash 资料夹
 
-    print(request_json)
-
     result = IPFSHash().update_hash_folder_from_gid(gid, ipfs_hash)
     return result

@@ -25,7 +25,7 @@ def search_by_words():
 
 @api.route('/api/getDetail')
 def get_detail():
-    gid = request.args.get('gid')
+    gid = request.args.get('gid', '')
     return get_detail_using_gid.get_detail_using_gid(gid)
 
 

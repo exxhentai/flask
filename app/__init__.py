@@ -1,6 +1,6 @@
 from flask import Flask
-import config
 from app import search, get_detail_using_gid
+import config
 from app.views.api import api
 
 
@@ -14,3 +14,4 @@ def create_app(config_file=config.Config):
         return 'Hello World!'
 
     return app
+

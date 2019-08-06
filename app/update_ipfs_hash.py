@@ -23,7 +23,7 @@ class IPFSHash(object):
             {"ex.gid": gid},
             {"$set": {"ipfs_url": ipfs_hash}})
 
-        if result.get('matchedCount', 0) == 0:  # 如果没有找到相应记录则返回错误，JSON 格式
+        if result.matched_count == 0:  # 如果没有找到相应记录则返回错误，JSON 格式
             request_error = RequestError().record_not_found()
             return jsonify({'success': False, 'error': request_error})
 

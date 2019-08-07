@@ -11,3 +11,6 @@ class RequestError(object):
 
     def no_unique_parameter(self):
         return 'You must provide one unique parameter.'
+
+    def invalid_hash_id(self):
+        return 'Your hash ID is invalid. It must be a 12-byte input or a 24-character hex string'

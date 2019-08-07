@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from app.ipfs_hash import IPFSHash
 from app.request_error import RequestError
 from bson.objectid import ObjectId
+from bson.errors import InvalidId
 
 upload = Blueprint('upload', __name__)
 
@@ -20,9 +21,12 @@ def set_IPFS_folder_hash_by_gid():
     hash_id = request_json.get('id', '')
     #: 作品的数据库Hash id
     if hash_id:
-        hash_id = ObjectId(hash_id)
-        result = IPFSHash().update_hash_folder('_id', hash_id, ipfs_hash)
-        return result
+        try:
+            hash_id = ObjectId(hash_id)
+            result = IPFSHash().update_hash_folder('_id', hash_id, ipfs_hash)
+            return result
+        except InvalidId:
+            return jsonify({'msg': RequestError().invalid_hash_id()}), 400
     return jsonify({'msg': RequestError().no_unique_parameter()}), 400
 
 
@@ -40,7 +44,10 @@ def set_IPFS_image_hash_by_gid():
     hash_id = request_json.get('id', '')
     #: 作品的数据库Hash id
     if hash_id:
-        hash_id = ObjectId(hash_id)
-        result = IPFSHash().update_image_hash('_id', hash_id, ipfs_hash_list)
-        return result
+        try:
+            hash_id = ObjectId(hash_id)
+            result = IPFSHash().update_image_hash('_id', hash_id, ipfs_hash_list)
+            return result
+        except InvalidId:
+            return jsonify({'msg': RequestError().invalid_hash_id()}), 400
     return jsonify({'msg': RequestError().no_unique_parameter()}), 400

@@ -33,7 +33,7 @@ class IPFSHash(object):
         # 测试参数是否合法
         if variable_value == '':
             # 如果没有相应参数则返回错误，JSON 格式
-            request_error = RequestError('gid').required_parameter_not_found()
+            request_error = RequestError(variable_name).required_parameter_not_found()
             return jsonify({'msg': request_error}), 400
         elif ipfs_hash_list is None:
             request_error = RequestError('ipfs_hash_list').required_parameter_not_found()
@@ -45,7 +45,7 @@ class IPFSHash(object):
             variable_value = str(variable_value)
 
         result = self.connection.Gallery.update_one(
-            {"ex.gid": variable_value},
+            {variable_name: variable_value},
             {"$set": {"ipfs_image_list": ipfs_hash_list}})
 
         if result.matched_count == 0:  # 如果没有找到相应记录则返回错误，JSON 格式

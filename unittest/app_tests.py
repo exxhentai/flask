@@ -2,6 +2,7 @@ import uwsgi
 import unittest
 from app.request_error import RequestError
 import random
+from werkzeug.exceptions import HTTPException
 
 
 class AppTestCase(unittest.TestCase):
@@ -56,21 +57,27 @@ class AppTestCase(unittest.TestCase):
         ipfs_hash = hex(random.getrandbits(128))
         rv = self.app.post('/upload/setIPFSFolderHashByGid', json={'gid': invalid_gid, 'ipfs_hash': ipfs_hash})
         json_response = rv.json
-        assert json_response['error'] == RequestError().record_not_found()  # 必须返回"条目不存在"
+        message = '404 Not Found: ' + RequestError().record_not_found()
+        assert self.assertRaises(HTTPException)
+        assert json_response['msg'] == message
 
     def test_update_ipfs_folder_hash_no_gid(self):
         # 测试不提供 Gid
         ipfs_hash = hex(random.getrandbits(128))
         rv = self.app.post('/upload/setIPFSFolderHashByGid', json={'ipfs_hash': ipfs_hash})
         json_response = rv.json
-        assert json_response['error'] == RequestError('gid').required_parameter_not_found()  # 必须返回"参数未找到"
+        message = '400 Bad Request: ' + RequestError('gid').required_parameter_not_found()
+        assert self.assertRaises(HTTPException)
+        assert json_response['msg'] == message  # 必须返回"参数未找到"
 
     def test_update_ipfs_folder_hash_no_hash(self):
         # 测试不提供 IPFS Hash
         invalid_gid = '99999999999'
         rv = self.app.post('/upload/setIPFSFolderHashByGid', json={'gid': invalid_gid})
         json_response = rv.json
-        assert json_response['error'] == RequestError('ipfs_hash').required_parameter_not_found()  # 必须返回"参数未找到"
+        message = '400 Bad Request: ' + RequestError('ipfs_hash').required_parameter_not_found()
+        assert self.assertRaises(HTTPException)
+        assert json_response['msg'] == message  # 必须返回"参数未找到"
 
     def test_get_full_tag_list(self):
         rv = self.app.get('/api/getFullTagList')

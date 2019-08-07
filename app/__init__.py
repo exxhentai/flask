@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, jsonify
 from app import search, get_detail_using_gid
 import config
 from app.views.api import api
@@ -16,6 +16,14 @@ def create_app(config_file=config.Config):
     @app.route('/')
     def hello_world():
         return 'Hello World!'
+
+    @app.errorhandler(400)
+    def page_not_found(e):
+        return jsonify(msg=str(e)), 400
+
+    @app.errorhandler(404)
+    def page_not_found(e):
+        return jsonify(msg=str(e)), 404
 
     return app
 

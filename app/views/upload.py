@@ -5,6 +5,7 @@ from app.request_error import RequestError
 upload = Blueprint('upload', __name__)
 
 
+# Authentication Required
 @upload.route('/upload/setIPFSFolderHashByGid', methods=['POST'])
 def set_IPFS_folder_hash_by_gid():
     request_json = request.get_json(force=True, silent=True) or {}
@@ -12,7 +13,19 @@ def set_IPFS_folder_hash_by_gid():
     #: 作品的Ex Gid
     ipfs_hash = request_json.get('ipfs_hash', '')
     #: 需要添加的 IPFS Hash 资料夹
-    api_key = request_json.get('api_key', '')
 
-    result = IPFSHash().update_hash_folder_from_gid(gid, ipfs_hash, api_key)
+    result = IPFSHash().update_hash_folder_from_gid(gid, ipfs_hash)
+    return result
+
+
+# Authentication Required
+@upload.route('/upload/setIPFSImageHashByGid', methods=['POST'])
+def set_IPFS_image_hash_by_gid():
+    request_json = request.get_json(force=True, silent=True) or {}
+    gid = request_json.get('gid', '')
+    #: 作品的Ex Gid
+    ipfs_hash_list = request_json.get('ipfs_hash_list', None)
+    #: 需要添加的 IPFS Hash 列表, list 格式
+
+    result = IPFSHash().update_image_hash_from_gid(gid, ipfs_hash_list)
     return result

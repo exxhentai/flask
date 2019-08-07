@@ -12,6 +12,7 @@ def set_IPFS_folder_hash_by_gid():
     #: 作品的Ex Gid
     ipfs_hash = request_json.get('ipfs_hash', '')
     #: 需要添加的 IPFS Hash 资料夹
+    api_key = request_json.get('api_key', '')
 
-    result = IPFSHash().update_hash_folder_from_gid(gid, ipfs_hash)
+    result = IPFSHash().update_hash_folder_from_gid(gid, ipfs_hash, api_key)
     return result

@@ -16,7 +16,7 @@ class IPFSHash(object):
         elif ipfs_hash == '':
             request_error = RequestError('ipfs_hash').required_parameter_not_found()
             return jsonify({'success': False, 'error': request_error})
-        if isinstance(gid,int):
+        if isinstance(gid, int):
             gid = str(gid)
 
         result = self.connection.Gallery.update_one(

@@ -29,6 +29,7 @@ class IPFSHash(object):
 
         return jsonify({'success': True})
 
+    # TODO: 如果有管理员权限，应当可以清除现有Image Hash 信息
     def update_image_hash(self, variable_name, variable_value, ipfs_hash_list):
         # 测试参数是否合法
         if variable_value == '':

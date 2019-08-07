@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from app.ipfs_hash import IPFSHash
+from app.upload.ipfs_hash import IPFSHash
 from app.request_error import RequestError
 from bson.objectid import ObjectId
 from bson.errors import InvalidId

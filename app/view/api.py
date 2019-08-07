@@ -3,10 +3,10 @@ from app import search, get_detail_common, get_tag_list
 from bson.objectid import ObjectId
 from app.request_error import RequestError
 
-api = Blueprint('api', __name__)
+view = Blueprint('view', __name__)
 
 
-@api.route('/api/searchByWords', methods=['POST'])
+@view.route('/api/searchByWords', methods=['POST'])
 def search_by_words():
     """ 主要搜索API """
     input_json = request.get_json(force=True, silent=True) or {}
@@ -25,7 +25,7 @@ def search_by_words():
     return search.search(words, limit, page, filtered_category, minimum_rating, tag_list)
 
 
-@api.route('/api/getDetail')
+@view.route('/api/getDetail')
 def get_detail():
     gid = request.args.get('gid', '')
     if gid:
@@ -39,6 +39,6 @@ def get_detail():
     return jsonify({'msg': RequestError().no_unique_parameter()})
 
 
-@api.route('/api/getFullTagList')
+@view.route('/api/getFullTagList')
 def get_full_tag_list():
     return get_tag_list.get_tag_list()

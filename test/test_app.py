@@ -15,11 +15,11 @@ class AppTestCase(unittest.TestCase):
         pass
 
     def test_search(self):
-        rv = self.app.post('/api/searchByWords')
+        rv = self.app.post('/view/searchByWords')
         assert b'Not Implemented' in rv.data
 
     def test_get_full_tag_list(self):
-        rv = self.app.get('/api/getFullTagList')
+        rv = self.app.get('/view/getFullTagList')
         assert b'Not Implemented' in rv.data
 
 

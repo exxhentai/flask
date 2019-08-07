@@ -1,8 +1,9 @@
 from flask import Flask, jsonify
-from app import search, get_detail_common
+from app import get_detail_common
+from app.view import search
 import config
-from app.view.api import view
-from app.upload.api import upload
+from app.view.view import view
+from app.upload.upload import upload
 from flask_cors import CORS
 
 

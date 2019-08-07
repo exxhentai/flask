@@ -17,7 +17,7 @@ class GetDetailTestCase(unittest.TestCase):
         # 获取作品详细信息
         # 测试一个存在的Gid
         valid_gid = '1452710'
-        rv = self.app.get('/api/getDetail?gid=' + valid_gid)
+        rv = self.app.get('/view/getDetail?gid=' + valid_gid)
         json_response = rv.json
         assert isinstance(json_response, dict)
         assert isinstance(json_response['title'], str)
@@ -26,7 +26,7 @@ class GetDetailTestCase(unittest.TestCase):
         # 获取作品详细信息
         # 测试一个不存在的Gid
         invalid_gid = '99999999999'
-        rv = self.app.get('/api/getDetail?gid=' + invalid_gid)
+        rv = self.app.get('/view/getDetail?gid=' + invalid_gid)
         json_response = rv.json
         assert json_response == {}  # 必须返回空List
 
@@ -34,7 +34,7 @@ class GetDetailTestCase(unittest.TestCase):
         # 获取作品详细信息
         # 测试不提供Gid
         invalid_gid = ''
-        rv = self.app.get('/api/getDetail?gid=' + invalid_gid)
+        rv = self.app.get('/view/getDetail?gid=' + invalid_gid)
         json_response = rv.json
         assert self.assertRaises(HTTPException)
         assert json_response['msg'] == RequestError().no_unique_parameter()  # 必须返回"参数未找到"

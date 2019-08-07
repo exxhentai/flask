@@ -27,7 +27,7 @@ class AppTestCase(unittest.TestCase):
         json_response = rv.json
         assert json_response['success'] is True
 
-        verify_record_json = self.app.get('/api/getDetail?gid=' + valid_gid).json
+        verify_record_json = self.app.get('/view/getDetail?gid=' + valid_gid).json
         assert verify_record_json['ipfs_image_list'] == ipfs_hash_list
 
     def test_update_ipfs_image_hash_via_hash_id(self):
@@ -39,7 +39,7 @@ class AppTestCase(unittest.TestCase):
         json_response = rv.json
         assert json_response['success'] is True
 
-        verify_record_json = self.app.get('/api/getDetail?id=' + valid_hash_id).json
+        verify_record_json = self.app.get('/view/getDetail?id=' + valid_hash_id).json
         assert verify_record_json['ipfs_image_list'] == ipfs_hash
 
     def test_update_ipfs_image_hash_via_invalid_hash_id(self):

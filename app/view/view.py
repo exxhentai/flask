@@ -1,12 +1,13 @@
 from flask import Blueprint, request, jsonify
-from app import search, get_detail_common, get_tag_list
+from app import get_detail_common, get_tag_list
+from app.view import search
 from bson.objectid import ObjectId
 from app.request_error import RequestError
 
 view = Blueprint('view', __name__)
 
 
-@view.route('/api/searchByWords', methods=['POST'])
+@view.route('/view/searchByWords', methods=['POST'])
 def search_by_words():
     """ 主要搜索API """
     input_json = request.get_json(force=True, silent=True) or {}
@@ -25,7 +26,7 @@ def search_by_words():
     return search.search(words, limit, page, filtered_category, minimum_rating, tag_list)
 
 
-@view.route('/api/getDetail')
+@view.route('/view/getDetail')
 def get_detail():
     gid = request.args.get('gid', '')
     if gid:
@@ -39,6 +40,6 @@ def get_detail():
     return jsonify({'msg': RequestError().no_unique_parameter()})
 
 
-@view.route('/api/getFullTagList')
+@view.route('/view/getFullTagList')
 def get_full_tag_list():
     return get_tag_list.get_tag_list()

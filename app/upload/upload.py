@@ -7,7 +7,7 @@ from bson.errors import InvalidId
 upload = Blueprint('upload', __name__)
 
 
-# Authentication Required
+# TODO: Authentication Required
 @upload.route('/upload/setIPFSFolderHash', methods=['POST'])
 def set_IPFS_folder_hash_by_gid():
     request_json = request.get_json(force=True, silent=True) or {}
@@ -30,7 +30,7 @@ def set_IPFS_folder_hash_by_gid():
     return jsonify({'msg': RequestError().no_unique_parameter()}), 400
 
 
-# Authentication Required
+# TODO: Authentication Required
 @upload.route('/upload/setIPFSImageHash', methods=['POST'])
 def set_IPFS_image_hash_by_gid():
     request_json = request.get_json(force=True, silent=True) or {}

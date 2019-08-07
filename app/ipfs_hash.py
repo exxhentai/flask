@@ -29,9 +29,9 @@ class IPFSHash(object):
 
         return jsonify({'success': True})
 
-    def update_image_hash_from_gid(self, gid, ipfs_hash_list):
+    def update_image_hash(self, variable_name, variable_value, ipfs_hash_list):
         # 测试参数是否合法
-        if gid == '':
+        if variable_value == '':
             # 如果没有相应参数则返回错误，JSON 格式
             request_error = RequestError('gid').required_parameter_not_found()
             return jsonify({'msg': request_error}), 400
@@ -41,11 +41,11 @@ class IPFSHash(object):
         elif not all(isinstance(elem, str) for elem in ipfs_hash_list):
             request_error = RequestError('ipfs_hash_list').required_parameter_not_found()
             return jsonify({'msg': request_error}), 400
-        if isinstance(gid, int):
-            gid = str(gid)
+        if isinstance(variable_value, int):
+            variable_value = str(variable_value)
 
         result = self.connection.Gallery.update_one(
-            {"ex.gid": gid},
+            {"ex.gid": variable_value},
             {"$set": {"ipfs_image_list": ipfs_hash_list}})
 
         if result.matched_count == 0:  # 如果没有找到相应记录则返回错误，JSON 格式

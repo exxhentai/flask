@@ -1,5 +1,5 @@
 from flask import Flask, jsonify
-from app import search, get_detail_using_gid
+from app import search, get_detail_common
 import config
 from app.views.api import api
 from app.views.upload import upload

@@ -31,14 +31,15 @@ class AppTestCase(unittest.TestCase):
         invalid_gid = '99999999999'
         rv = self.app.get('/api/getDetail?gid=' + invalid_gid)
         json_response = rv.json
-        assert json_response == RequestError().record_not_found()  # 必须返回"条目不存在"
+        assert json_response == {}  # 必须返回空List
 
     def test_get_detail_no_gid(self):
         # 测试不提供Gid
         invalid_gid = ''
         rv = self.app.get('/api/getDetail?gid=' + invalid_gid)
         json_response = rv.json
-        assert json_response == RequestError('gid').required_parameter_not_found()  # 必须返回"参数未找到"
+        assert self.assertRaises(HTTPException)
+        assert json_response['msg'] == RequestError('gid').required_parameter_not_found()  # 必须返回"参数未找到"
 
     def test_update_ipfs_folder_hash(self):
         # 测试一个存在的Gid
@@ -57,27 +58,35 @@ class AppTestCase(unittest.TestCase):
         ipfs_hash = hex(random.getrandbits(128))
         rv = self.app.post('/upload/setIPFSFolderHashByGid', json={'gid': invalid_gid, 'ipfs_hash': ipfs_hash})
         json_response = rv.json
-        message = '404 Not Found: ' + RequestError().record_not_found()
         assert self.assertRaises(HTTPException)
-        assert json_response['msg'] == message
+        assert json_response['msg'] == RequestError().record_not_found()
 
     def test_update_ipfs_folder_hash_no_gid(self):
         # 测试不提供 Gid
         ipfs_hash = hex(random.getrandbits(128))
         rv = self.app.post('/upload/setIPFSFolderHashByGid', json={'ipfs_hash': ipfs_hash})
         json_response = rv.json
-        message = '400 Bad Request: ' + RequestError('gid').required_parameter_not_found()
         assert self.assertRaises(HTTPException)
-        assert json_response['msg'] == message  # 必须返回"参数未找到"
+        assert json_response['msg'] == RequestError('gid').required_parameter_not_found()  # 必须返回"参数未找到"
 
     def test_update_ipfs_folder_hash_no_hash(self):
         # 测试不提供 IPFS Hash
         invalid_gid = '99999999999'
         rv = self.app.post('/upload/setIPFSFolderHashByGid', json={'gid': invalid_gid})
         json_response = rv.json
-        message = '400 Bad Request: ' + RequestError('ipfs_hash').required_parameter_not_found()
         assert self.assertRaises(HTTPException)
-        assert json_response['msg'] == message  # 必须返回"参数未找到"
+        assert json_response['msg'] == RequestError('ipfs_hash').required_parameter_not_found()  # 必须返回"参数未找到"
+
+    def test_update_ipfs_image_list_hash(self):
+        # 测试一个存在的Gid
+        valid_gid = '1452710'
+        ipfs_hash_list = [hex(random.getrandbits(128)) for _ in range(1, 10)]
+        rv = self.app.post('/upload/setIPFSImageHashByGid', json={'gid': valid_gid, 'ipfs_hash_list': ipfs_hash_list})
+        json_response = rv.json
+        assert json_response['success'] is True
+
+        verify_record_json = self.app.get('/api/getDetail?gid=' + valid_gid).json
+        assert verify_record_json['ipfs_image_list'] == ipfs_hash_list
 
     def test_get_full_tag_list(self):
         rv = self.app.get('/api/getFullTagList')

@@ -7,20 +7,20 @@ class IPFSHash(object):
     def __init__(self):
         self.connection = Connect.get_connection()
 
-    def update_hash_folder_from_gid(self, gid, ipfs_hash):
+    def update_hash_folder(self, variable_name, variable_value, ipfs_hash):
         # 测试参数是否合法
-        if gid == '':
+        if variable_value == '':
             # 如果没有相应参数则返回错误，JSON 格式
-            request_error = RequestError('gid').required_parameter_not_found()
+            request_error = RequestError(variable_name).required_parameter_not_found()
             return jsonify({'msg': request_error}), 400
         elif ipfs_hash == '':
             request_error = RequestError('ipfs_hash').required_parameter_not_found()
             return jsonify({'msg': request_error}), 400
-        if isinstance(gid, int):
-            gid = str(gid)
+        if isinstance(variable_value, int):
+            variable_value = str(variable_value)
 
         result = self.connection.Gallery.update_one(
-            {"ex.gid": gid},
+            {variable_name: variable_value},
             {"$set": {"ipfs_url": ipfs_hash}})
 
         if result.matched_count == 0:  # 如果没有找到相应记录则返回错误，JSON 格式

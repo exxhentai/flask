@@ -8,3 +8,6 @@ class RequestError(object):
 
     def record_not_found(self):
         return 'Unable to find the record you are looking for.'
+
+    def no_unique_parameter(self):
+        return 'You must provide one unique parameter.'

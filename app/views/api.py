@@ -1,5 +1,7 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from app import search, get_detail_using_gid, get_tag_list
+from bson.objectid import ObjectId
+from app.request_error import RequestError
 
 api = Blueprint('api', __name__)
 
@@ -26,7 +28,15 @@ def search_by_words():
 @api.route('/api/getDetail')
 def get_detail():
     gid = request.args.get('gid', '')
-    return get_detail_using_gid.get_detail_using_gid(gid)
+    if gid:
+        return get_detail_using_gid.get_detail_common('ex.gid', gid)
+
+    hash_id = request.args.get('id', '')
+    if hash_id:
+        hash_id = ObjectId(hash_id)
+        return get_detail_using_gid.get_detail_common('_id', hash_id)
+
+    return jsonify({'msg': RequestError().no_unique_parameter()})
 
 
 @api.route('/api/getFullTagList')

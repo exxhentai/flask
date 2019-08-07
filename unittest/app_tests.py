@@ -19,6 +19,7 @@ class AppTestCase(unittest.TestCase):
         assert b'Not Implemented' in rv.data
 
     def test_get_detail(self):
+        # 获取作品详细信息
         # 测试一个存在的Gid
         valid_gid = '1452710'
         rv = self.app.get('/api/getDetail?gid=' + valid_gid)
@@ -27,6 +28,7 @@ class AppTestCase(unittest.TestCase):
         assert isinstance(json_response['title'], str)
 
     def test_get_detail_non_exist_gid(self):
+        # 获取作品详细信息
         # 测试一个不存在的Gid
         invalid_gid = '99999999999'
         rv = self.app.get('/api/getDetail?gid=' + invalid_gid)
@@ -34,14 +36,16 @@ class AppTestCase(unittest.TestCase):
         assert json_response == {}  # 必须返回空List
 
     def test_get_detail_no_gid(self):
+        # 获取作品详细信息
         # 测试不提供Gid
         invalid_gid = ''
         rv = self.app.get('/api/getDetail?gid=' + invalid_gid)
         json_response = rv.json
         assert self.assertRaises(HTTPException)
-        assert json_response['msg'] == RequestError('gid').required_parameter_not_found()  # 必须返回"参数未找到"
+        assert json_response['msg'] == RequestError().no_unique_parameter()  # 必须返回"参数未找到"
 
-    def test_update_ipfs_folder_hash(self):
+    def test_update_ipfs_folder_hash_via_gid(self):
+        # 上传 IPFS 资料夹 Hash
         # 测试一个存在的Gid
         valid_gid = '1452710'
         ipfs_hash = hex(random.getrandbits(128))
@@ -52,7 +56,30 @@ class AppTestCase(unittest.TestCase):
         verify_record_json = self.app.get('/api/getDetail?gid=' + valid_gid).json
         assert verify_record_json['ipfs_url'] == ipfs_hash
 
+    def test_update_ipfs_folder_hash_via_hash_id(self):
+        # 上传 IPFS 资料夹 Hash
+        # 测试一个存在的Hash ID
+        valid_hash_id = '5d43fcd769ada8455ce26774'
+        ipfs_hash = hex(random.getrandbits(128))
+        rv = self.app.post('/upload/setIPFSFolderHashByHashId', json={'id': valid_hash_id, 'ipfs_hash': ipfs_hash})
+        json_response = rv.json
+        assert json_response['success'] is True
+
+        verify_record_json = self.app.get('/api/getDetail?id=' + valid_hash_id).json
+        assert verify_record_json['ipfs_url'] == ipfs_hash
+
+    def test_update_ipfs_folder_hash_via_invalid_hash_id(self):
+        # 上传 IPFS 资料夹 Hash
+        # 测试一个不存在的Hash ID
+        valid_hash_id = '9d43fcd769ada8455ce26774'
+        ipfs_hash = hex(random.getrandbits(128))
+        rv = self.app.post('/upload/setIPFSFolderHashByHashId', json={'id': valid_hash_id, 'ipfs_hash': ipfs_hash})
+        json_response = rv.json
+        assert self.assertRaises(HTTPException)
+        assert json_response['msg'] == RequestError().record_not_found()
+
     def test_update_ipfs_folder_hash_non_exist_gid(self):
+        # 上传 IPFS 资料夹 Hash
         # 测试一个不存在的Gid
         invalid_gid = '99999999999'
         ipfs_hash = hex(random.getrandbits(128))
@@ -62,14 +89,16 @@ class AppTestCase(unittest.TestCase):
         assert json_response['msg'] == RequestError().record_not_found()
 
     def test_update_ipfs_folder_hash_no_gid(self):
+        # 上传 IPFS 资料夹 Hash
         # 测试不提供 Gid
         ipfs_hash = hex(random.getrandbits(128))
         rv = self.app.post('/upload/setIPFSFolderHashByGid', json={'ipfs_hash': ipfs_hash})
         json_response = rv.json
         assert self.assertRaises(HTTPException)
-        assert json_response['msg'] == RequestError('gid').required_parameter_not_found()  # 必须返回"参数未找到"
+        assert json_response['msg'] == RequestError('ex.gid').required_parameter_not_found()  # 必须返回"参数未找到"
 
     def test_update_ipfs_folder_hash_no_hash(self):
+        # 上传 IPFS 图片 Hash 列表
         # 测试不提供 IPFS Hash
         invalid_gid = '99999999999'
         rv = self.app.post('/upload/setIPFSFolderHashByGid', json={'gid': invalid_gid})
@@ -78,6 +107,7 @@ class AppTestCase(unittest.TestCase):
         assert json_response['msg'] == RequestError('ipfs_hash').required_parameter_not_found()  # 必须返回"参数未找到"
 
     def test_update_ipfs_image_list_hash(self):
+        # 上传 IPFS 图片 Hash 列表
         # 测试一个存在的Gid
         valid_gid = '1452710'
         ipfs_hash_list = [hex(random.getrandbits(128)) for _ in range(1, 10)]

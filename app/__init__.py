@@ -1,6 +1,5 @@
 from flask import Flask, jsonify
-from app import get_detail_common
-from app.view import search
+from app.view import search, get_detail_common
 import config
 from app.view.view import view
 from app.upload.upload import upload

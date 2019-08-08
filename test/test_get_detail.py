@@ -22,6 +22,35 @@ class GetDetailTestCase(unittest.TestCase):
         assert isinstance(json_response, dict)
         assert isinstance(json_response['title'], str)
 
+    def test_get_detail_hash_id(self):
+        # 获取作品详细信息
+        # 测试一个存在的Hash ID
+        valid_hash_id = '5d43fcd769ada8455ce26772'
+        rv = self.app.get('/view/getDetail?id=' + valid_hash_id)
+        json_response = rv.json
+        assert isinstance(json_response, dict)
+        assert isinstance(json_response['title'], str)
+
+    def test_get_detail_title(self):
+        # 获取作品详细信息
+        # 测试一个存在的title
+        title = '[Pixiv] Inoji | Inukami | Inu Hashiru (5992265) [PURGED]'
+        rv = self.app.get('/view/getDetail?title=' + title)
+        json_response = rv.json
+        assert isinstance(json_response, dict)
+        assert json_response['ex']['gid'] == '1452708'
+        assert isinstance(json_response['title'], str)
+
+    def test_get_detail_japan_title(self):
+        # 获取作品详细信息
+        # 测试一个存在的日文 title
+        title = '[Pixiv] いの字 | 戌かみ | いぬかみ | Inu Hashiru (5992265) [PURGED]'
+        rv = self.app.get('/view/getDetail?japanTitle=' + title)
+        json_response = rv.json
+        assert isinstance(json_response, dict)
+        assert json_response['ex']['gid'] == '1452708'
+        assert isinstance(json_response['title'], str)
+
     def test_get_detail_non_exist_gid(self):
         # 获取作品详细信息
         # 测试一个不存在的Gid

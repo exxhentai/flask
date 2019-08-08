@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
-from app import get_detail_common, get_tag_list
-from app.view import search
+from app import get_tag_list
+from app.view import search, get_detail_common
 from bson.objectid import ObjectId
 from app.request_error import RequestError
 
@@ -36,6 +36,14 @@ def get_detail():
     if hash_id:
         hash_id = ObjectId(hash_id)
         return get_detail_common.get_detail_common('_id', hash_id)
+
+    title = request.args.get('title', '')
+    if title:
+        return get_detail_common.get_detail_common('title', title)
+
+    japan_title = request.args.get('japanTitle', '')
+    if japan_title:
+        return get_detail_common.get_detail_common('japan_title', japan_title)
 
     return jsonify({'msg': RequestError().no_unique_parameter()})
 

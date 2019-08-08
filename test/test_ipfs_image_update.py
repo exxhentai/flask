@@ -23,11 +23,11 @@ class AppTestCase(unittest.TestCase):
         # 测试一个存在的Gid
         valid_gid = '1452710'
         ipfs_hash_list = generate_random_list()
-        rv = self.app.post('/upload/setIPFSImageHash', json={'gid': valid_gid, 'ipfs_hash_list': ipfs_hash_list})
+        rv = self.app.post('/v1/upload/setIPFSImageHash', json={'gid': valid_gid, 'ipfs_hash_list': ipfs_hash_list})
         json_response = rv.json
         assert json_response['success'] is True
 
-        verify_record_json = self.app.get('/view/getDetail?gid=' + valid_gid).json
+        verify_record_json = self.app.get('/v1/view/getDetail?gid=' + valid_gid).json
         assert verify_record_json['ipfs_image_list'] == ipfs_hash_list
 
     def test_update_ipfs_image_hash_via_hash_id(self):
@@ -35,11 +35,11 @@ class AppTestCase(unittest.TestCase):
         # 测试一个存在的Hash ID
         valid_hash_id = '5d43fcd769ada8455ce26774'
         ipfs_hash = generate_random_list()
-        rv = self.app.post('/upload/setIPFSImageHash', json={'id': valid_hash_id, 'ipfs_hash_list': ipfs_hash})
+        rv = self.app.post('/v1/upload/setIPFSImageHash', json={'id': valid_hash_id, 'ipfs_hash_list': ipfs_hash})
         json_response = rv.json
         assert json_response['success'] is True
 
-        verify_record_json = self.app.get('/view/getDetail?id=' + valid_hash_id).json
+        verify_record_json = self.app.get('/v1/view/getDetail?id=' + valid_hash_id).json
         assert verify_record_json['ipfs_image_list'] == ipfs_hash
 
     def test_update_ipfs_image_hash_via_invalid_hash_id(self):
@@ -47,7 +47,7 @@ class AppTestCase(unittest.TestCase):
         # 测试一个不存在的Hash ID
         valid_hash_id = '9d43fcd769ada8455ce26774'
         ipfs_hash = generate_random_list()
-        rv = self.app.post('/upload/setIPFSImageHash', json={'id': valid_hash_id, 'ipfs_hash_list': ipfs_hash})
+        rv = self.app.post('/v1/upload/setIPFSImageHash', json={'id': valid_hash_id, 'ipfs_hash_list': ipfs_hash})
         json_response = rv.json
         assert self.assertRaises(HTTPException)
         assert json_response['msg'] == RequestError().record_not_found()
@@ -57,7 +57,7 @@ class AppTestCase(unittest.TestCase):
         # 测试一个非法的Hash ID
         valid_hash_id = '2333'
         ipfs_hash = generate_random_list()
-        rv = self.app.post('/upload/setIPFSImageHash', json={'id': valid_hash_id, 'ipfs_hash_list': ipfs_hash})
+        rv = self.app.post('/v1/upload/setIPFSImageHash', json={'id': valid_hash_id, 'ipfs_hash_list': ipfs_hash})
         json_response = rv.json
         assert self.assertRaises(HTTPException)
         assert json_response['msg'] == RequestError().invalid_hash_id()
@@ -67,7 +67,7 @@ class AppTestCase(unittest.TestCase):
         # 测试一个不存在的Gid
         invalid_gid = '99999999999'
         ipfs_hash = hex(random.getrandbits(128))
-        rv = self.app.post('/upload/setIPFSImageHash', json={'gid': invalid_gid, 'ipfs_hash_list': ipfs_hash})
+        rv = self.app.post('/v1/upload/setIPFSImageHash', json={'gid': invalid_gid, 'ipfs_hash_list': ipfs_hash})
         json_response = rv.json
         assert self.assertRaises(HTTPException)
         assert json_response['msg'] == RequestError().record_not_found()
@@ -76,7 +76,7 @@ class AppTestCase(unittest.TestCase):
         # 上传 IPFS 资料夹 Hash
         # 测试不提供 Gid
         ipfs_hash = generate_random_list()
-        rv = self.app.post('/upload/setIPFSImageHash', json={'ipfs_hash_list': ipfs_hash})
+        rv = self.app.post('/v1/upload/setIPFSImageHash', json={'ipfs_hash_list': ipfs_hash})
         json_response = rv.json
         assert self.assertRaises(HTTPException)
         assert json_response['msg'] == RequestError().no_unique_parameter()  # 必须返回"参数未找到"
@@ -85,7 +85,7 @@ class AppTestCase(unittest.TestCase):
         # 上传 IPFS 图片 Hash 列表
         # 测试不提供 IPFS Hash
         invalid_gid = '99999999999'
-        rv = self.app.post('/upload/setIPFSImageHash', json={'gid': invalid_gid})
+        rv = self.app.post('/v1/upload/setIPFSImageHash', json={'gid': invalid_gid})
         json_response = rv.json
         assert self.assertRaises(HTTPException)
         assert json_response['msg'] == RequestError('ipfs_hash_list').required_parameter_not_found()  # 必须返回"参数未找到"

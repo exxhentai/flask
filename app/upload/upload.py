@@ -4,11 +4,11 @@ from app.request_error import RequestError
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
 
-upload = Blueprint('upload', __name__)
+upload = Blueprint('upload', __name__, url_prefix='/v1/upload')
 
 
 # TODO: Authentication Required
-@upload.route('/upload/setIPFSFolderHash', methods=['POST'])
+@upload.route('/setIPFSFolderHash', methods=['POST'])
 def set_IPFS_folder_hash_by_gid():
     request_json = request.get_json(force=True, silent=True) or {}
     ipfs_hash = request_json.get('ipfs_hash', '')
@@ -31,7 +31,7 @@ def set_IPFS_folder_hash_by_gid():
 
 
 # TODO: Authentication Required
-@upload.route('/upload/setIPFSImageHash', methods=['POST'])
+@upload.route('/setIPFSImageHash', methods=['POST'])
 def set_IPFS_image_hash_by_gid():
     request_json = request.get_json(force=True, silent=True) or {}
     ipfs_hash_list = request_json.get('ipfs_hash_list', None)

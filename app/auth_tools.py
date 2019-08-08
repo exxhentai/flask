@@ -12,6 +12,8 @@ def login_required(f):
         except jwt.exceptions.InvalidTokenError:
             return jsonify({"msg": "Auth sign does not verify"}), 400
         user: dict = get_user_with_uid(decode_jwt.get("sub"))
+        if user is None:
+            return jsonify({"msg": "Can not find user data"}), 403
         if decode_jwt["iat"] < user["valid_since"]:  # 若是這個jwt已被撤銷
             return jsonify({"msg": "This session has been revoked"}), 403
         g.user = user

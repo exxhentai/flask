@@ -23,3 +23,15 @@ def login_required(f):
 
 def get_user_with_uid(uid: str) -> dict:
     pass
+
+
+def sign(json_: dict) -> str:
+    return jwt.encode(json_, current_app.secret_key, algorithm='HS256').decode()
+
+
+def verify_sing(signed: str) -> dict:
+    return jwt.decode(signed.encode(), current_app.secret_key, algorithms=['HS256'])
+
+
+def is_user_exist(username: str) -> bool:
+    pass

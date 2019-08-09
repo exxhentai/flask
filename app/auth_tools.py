@@ -33,5 +33,9 @@ def verify_sing(signed: str) -> dict:
     return jwt.decode(signed.encode(), current_app.secret_key, algorithms=['HS256'])
 
 
-def is_user_exist(username: str) -> bool:
-    pass
+def is_username_exist(username: str) -> bool:
+    result = g.db.users.find_one({"username": username})
+    if result is None:
+        return False
+    else:
+        return True

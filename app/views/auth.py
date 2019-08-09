@@ -2,7 +2,8 @@ from flask import Blueprint, request, jsonify, g
 import jwt
 import pymongo
 import datetime
-from auth_tools import is_username_exist, verify_sing
+from auth_tools import is_username_exist, verify_sing, get_user_with_username, sign
+import bcrypt
 
 auth_blueprint = Blueprint(
     "auth_v1",
@@ -83,11 +84,31 @@ def sign_config_accept():
 def login():
     try:
         username = request.form["username"]
-        password = request.form["password"]
+        password: str = request.form["password"]
     except KeyError:
         return jsonify({"mag": "Username or Password is incorrect"}), 403
     if is_username_exist(username) is False:
         return jsonify({"mag": "Username or Password is incorrect"}), 403
+    user = get_user_with_username(username)
+    if user is None:
+        return jsonify({"mag": "Username or Password is incorrect"}), 403
+    hash_pwd: str = user["password"]
+    if not bcrypt.checkpw(password.encode(), hash_pwd.encode()):
+        return jsonify({"mag": "Username or Password is incorrect"}), 403
+    token = {
+        "sub": "Mongo的id",
+        "iss": "example.com",
+        "aud": "前端的網址",
+        "iat": int(datetime.datetime.now().timestamp()),
+        "remember": True,
+        "type": "login_credential",
+        "level": "master_password"
+    }
+    signed = sign(token)
+    return jsonify({
+        "msg": "successful",
+        "jwt": signed
+    }), 200
 
 
 

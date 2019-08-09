@@ -2,7 +2,7 @@ from flask import Blueprint, request, jsonify, g
 import jwt
 import pymongo
 import datetime
-from auth_tools import is_user_exist, verify_sing
+from auth_tools import is_username_exist, verify_sing
 
 auth_blueprint = Blueprint(
     "auth_v1",
@@ -25,7 +25,7 @@ def sign_up():
         return jsonify({"mag": "Miss parameter"}), 400
     if len(username) <3 or len(password) <8:
         return jsonify({"mag": "Username or password is too short"}), 400
-    if is_user_exist(username):
+    if is_username_exist(username):
         return jsonify({"mag": "User Exist"}), 200  # 我應該建立一個狀態碼
     apply_data = {
         "un": username,
@@ -55,7 +55,7 @@ def sign_config_accept():
         mail = auth_code['ml']
     except KeyError:
         return jsonify({"msg": "Token broken"}), 400
-    if is_user_exist(username):
+    if is_username_exist(username):
         return jsonify({"msg": "User exist"}), 409
     insert_user = {
         'username': username,
@@ -79,7 +79,6 @@ def sign_config_accept():
         }),200
 
 
-
 @auth_blueprint.route('/login', methods=['POST'])
 def login():
     try:
@@ -87,7 +86,7 @@ def login():
         password = request.form["password"]
     except KeyError:
         return jsonify({"mag": "Username or Password is incorrect"}), 403
-    if is_user_exist(username) is False:
+    if is_username_exist(username) is False:
         return jsonify({"mag": "Username or Password is incorrect"}), 403
 
 

@@ -1,6 +1,7 @@
 from flask import request, current_app, jsonify, g
 from functools import wraps
 import jwt
+from bson.objectid import ObjectId
 
 
 def login_required(f):
@@ -22,7 +23,7 @@ def login_required(f):
 
 
 def get_user_with_uid(uid: str) -> dict:
-    pass
+    return g.db.users.find_one({"_id": ObjectId(uid)})
 
 
 def sign(json_: dict) -> str:
@@ -39,3 +40,7 @@ def is_username_exist(username: str) -> bool:
         return False
     else:
         return True
+
+
+def get_user_with_username(username: str):
+    return g.db.users.find_one({"username": username})
